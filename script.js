@@ -1,151 +1,79 @@
-const mapa = L.map('map').setView([-22.9, -43.4], 11); // Região do RJ
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Mapa © OpenStreetMap'
-}).addTo(mapa);
-
-// === Bairros definidos com coordenadas ===
-
-const areas = {
-  "Sulacap": {
-    coords: [[
-      [-22.89392939877881, -43.39837792837761],
-      [-22.914883314839585, -43.396754970445386],
-      [-22.911301704004572, -43.36601553368703],
-      [-22.88842759437452, -43.37462955578397],
-      [-22.891003763547488, -43.38588033110614],
-      [-22.89392939877881, -43.39837792837761]
-    ]],
-    nomes: []
-  },
-  "Galeão": {
-  coords: [[
-    [-22.811350697517554, -43.26276109967222],
-    [-22.830645780341982, -43.244179782901284],
-    [-22.818073169332663, -43.2211490716212],
-    [-22.798131569603015, -43.207267234391054],
-    [-22.79031800118331, -43.234770467262365],
-    [-22.811350697517554, -43.26276109967222]
-  ]],
-  nomes: []
-},
-"Campo Grande": {
-  coords: [[
-    [-22.893551570393555, -43.581228560018445],
-    [-22.917642462819998, -43.57665550888083],
-    [-22.911596482073307, -43.53955611391575],
-    [-22.890024250877417, -43.542119731491056],
-    [-22.893551570393555, -43.581228560018445]
-  ]],
-  nomes: []
-},
-  "Valqueire": {
-    coords: [[
-      [-22.881441855325562, -43.3726802952018],
-      [-22.883352946417077, -43.3726802952018],
-      [-22.894570413471364, -43.369846272402235],
-      [-22.90437509273403, -43.36735298890703],
-      [-22.901745998274478, -43.34742715052988],
-      [-22.881441855325562, -43.3502275199435],
-      [-22.881441855325562, -43.3726802952018]
-    ]],
-    nomes: []
-  },
-  "Taquara": {
-    coords: [[
-      [-22.91722635393448, -43.39448773885229],
-      [-22.93743863503029, -43.39121176949914],
-      [-22.938757879421004, -43.36740497276472],
-      [-22.91552107253166, -43.36500638970324],
-      [-22.91722635393448, -43.39448773885229]
-    ]],
-    nomes: []
-  },
-  "Bangu": {
-    coords: [[
-      [-22.86697274252255, -43.48492808082668],
-      [-22.884988045253493, -43.48194631369532],
-      [-22.889382421956057, -43.4446648832095],
-      [-22.86697274252255, -43.4434890773224],
-      [-22.86697274252255, -43.48492808082668]
-    ]],
-    nomes: []
-  },
-  "Barra": {
-    coords: [[
-      [-22.988583054154617, -43.37945375582376],
-      [-23.006800885524314, -43.37974997703182],
-      [-23.004346921220318, -43.34756021862273],
-      [-22.988581726043776, -43.35109699415386],
-      [-22.988583054154617, -43.37945375582376]
-    ]],
-    nomes: []
-  },
-  "Recreio": {
-    coords: [[
-      [-23.008973879166902, -43.49377040786172],
-      [-23.029084447104836, -43.493170357816325],
-      [-23.019580727919575, -43.43499017610378],
-      [-23.0040737175448, -43.44236832524919],
-      [-23.008973879166902, -43.49377040786172]
-    ]],
-    nomes: []
-  },
-  "Deodoro": {
-    coords: [[
-      [-22.837348045400034, -43.40221940319324],
-      [-22.863021065923235, -43.396642646418655],
-      [-22.857069640616558, -43.3661189917556],
-      [-22.83516980889908, -43.375514880034416],
-      [-22.837348045400034, -43.40221940319324]
-    ]],
-    nomes: []
-  },
-  "Anchieta": {
-    coords: [[
-      [-22.813798460604957, -43.413658818786644],
-      [-22.837090025099073, -43.41013851833148],
-      [-22.831937542086763, -43.376992988021755],
-      [-22.81216876018236, -43.382843642905016],
-      [-22.813798460604957, -43.413658818786644]
-    ]],
-    nomes: []
-  }
-};
-
-// === Renderiza os polígonos no mapa ===
-
-for (const [nomeArea, dados] of Object.entries(areas)) {
-  const poligono = L.polygon(dados.coords, {
-    color: 'blue',
-    fillOpacity: 0.4
+// CONFIGURAÇÃO DO FIREBASE
+const firebaseConfig = {
+    apiKey: "AIzaSyA9xgwD8SnOFyYsZzrBVtznLG0snBuq-z0",
+    authDomain: "mapa-rj-cepaint.firebaseapp.com",
+    databaseURL: "https://mapa-rj-cepaint-default-rtdb.firebaseio.com",
+    projectId: "mapa-rj-cepaint",
+    storageBucket: "mapa-rj-cepaint.firebasestorage.app",
+    messagingSenderId: "425577312736",
+    appId: "1:425577312736:web:17295efe9f25af77ce7b85",
+    measurementId: "G-7KH68VF781"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  
+  // MAPA
+  const mapa = L.map('map').setView([-22.9, -43.4], 11);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Mapa © OpenStreetMap'
   }).addTo(mapa);
-
-  // Mostra o nome ao passar o mouse
-  poligono.bindTooltip(nomeArea, { permanent: false, direction: "center" });
-
-  // Clicou na área
-  poligono.on('click', () => {
-    const nomePessoa = document.getElementById('nome').value.trim();
-    if (nomePessoa === "") {
-      alert("Digite seu nome antes de clicar.");
-      return;
-    }
-    areas[nomeArea].nomes.push(nomePessoa);
-    atualizarResumo();
-    alert(`${nomePessoa} registrado em ${nomeArea}`);
-    document.getElementById('nome').value = "";
-  });
-}
-
-// === Atualiza o resumo abaixo do mapa ===
-
-function atualizarResumo() {
-  const lista = document.getElementById('resumo');
-  lista.innerHTML = "";
-  for (const [area, dados] of Object.entries(areas)) {
-    const item = document.createElement('li');
-    item.innerHTML = `<strong>${area}</strong>: ${dados.nomes.length} pessoa(s) - [${dados.nomes.join(', ')}]`;
-    lista.appendChild(item);
+  
+  // ÁREAS
+  const areas = {
+    "Sulacap": { coords: [[[-22.8939, -43.3983], [-22.9148, -43.3967], [-22.9113, -43.3660], [-22.8884, -43.3746], [-22.8910, -43.3858], [-22.8939, -43.3983]]]},
+    "Valqueire": { coords: [[[-22.8814, -43.3726], [-22.8833, -43.3726], [-22.8945, -43.3698], [-22.9043, -43.3673], [-22.9017, -43.3474], [-22.8814, -43.3502], [-22.8814, -43.3726]]]},
+    "Taquara": { coords: [[[-22.9172, -43.3944], [-22.9374, -43.3912], [-22.9387, -43.3674], [-22.9155, -43.3650], [-22.9172, -43.3944]]]},
+    "Barra": { coords: [[[-22.8669, -43.4849], [-22.8849, -43.4819], [-22.8893, -43.4446], [-22.8669, -43.4434], [-22.8669, -43.4849]]]},
+    "Recreio": { coords: [[[-22.9885, -43.3794], [-23.0068, -43.3797], [-23.0043, -43.3475], [-22.9885, -43.3510], [-22.9885, -43.3794]]]},
+    "Bangu": { coords: [[[-23.0089, -43.4937], [-23.0290, -43.4931], [-23.0195, -43.4349], [-23.0040, -43.4423], [-23.0089, -43.4937]]]},
+    "Deodoro": { coords: [[[-22.8373, -43.4022], [-22.8630, -43.3966], [-22.8570, -43.3661], [-22.8351, -43.3755], [-22.8373, -43.4022]]]},
+    "Anchieta": { coords: [[[-22.8137, -43.4136], [-22.8370, -43.4101], [-22.8319, -43.3769], [-22.8121, -43.3828], [-22.8137, -43.4136]]]},
+    "Galeão": { coords: [[[-22.8113, -43.2627], [-22.8306, -43.2441], [-22.8180, -43.2211], [-22.7981, -43.2072], [-22.7903, -43.2347], [-22.8113, -43.2627]]]},
+    "Campo Grande": { coords: [[[-22.8935, -43.5812], [-22.9176, -43.5766], [-22.9115, -43.5395], [-22.8900, -43.5421], [-22.8935, -43.5812]]]}
+  };
+  
+  // RENDERIZAR ÁREAS E HABILITAR CLIQUE
+  for (const [nomeArea, dados] of Object.entries(areas)) {
+    const poligono = L.polygon(dados.coords, {
+      color: 'blue',
+      fillOpacity: 0.4
+    }).addTo(mapa);
+  
+    poligono.bindTooltip(nomeArea, { permanent: false, direction: "center" });
+  
+    poligono.on('click', () => {
+      const nome = document.getElementById('nome').value.trim();
+      if (nome === "") {
+        alert("Digite seu nome antes de clicar.");
+        return;
+      }
+  
+      const referencia = db.ref(`votos/${nomeArea}`);
+      referencia.push(nome); // Salva no Firebase
+  
+      document.getElementById('nome').value = "";
+      alert(`${nome} registrado em ${nomeArea}`);
+    });
   }
-}
+  
+  // ATUALIZA O RESUMO AO VIVO
+  function atualizarResumo() {
+    const lista = document.getElementById('resumo');
+    lista.innerHTML = "";
+  
+    db.ref('votos').on('value', (snapshot) => {
+      const dados = snapshot.val() || {};
+      lista.innerHTML = "";
+  
+      for (const [area, nomes] of Object.entries(dados)) {
+        const nomesArray = Object.values(nomes);
+        const item = document.createElement('li');
+        item.innerHTML = `<strong>${area}</strong>: ${nomesArray.length} pessoa(s) - [${nomesArray.join(', ')}]`;
+        lista.appendChild(item);
+      }
+    });
+  }
+  
+  atualizarResumo();
