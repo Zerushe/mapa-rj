@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  h1, h2 {
+    margin-top: 30px;
+  }
+  
+  #nome {
+    margin: 20px 0;
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    background-color: #222;
+    color: #fff;
+  }
+  
+  #map {
+    height: 450px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  #resumo {
+    list-style: none;
+    padding: 0;
+    width: 80%;
+    max-width: 800px;
+    margin-bottom: 60px;
+    font-size: 15px;
+  }
+  
+  #resumo li {
+    margin: 8px 0;
+    text-align: left;
+  }
+  
